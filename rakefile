@@ -1,0 +1,30 @@
+namespace :git do
+
+  desc "submits project with the given tag and message. Use with\n \"submit[tag, message]\" with quotes included."
+  task :submit, [:tag, :message] do |t, args|
+    sh "git tag -a #{args[:tag]} -m \"#{args[:message]}\""
+    sh "git push origin #{args[:tag]}"
+  end
+
+  desc "sets up a new git repository at the given URL"
+  task :setup, [:url] do |t, args|
+    sh "git init", verbose: false
+    sh "git add .", verbose: false
+    sh "git commit -m \"Initial commit\"", verbose: true
+    sh "git remote add origin #{args[:url]}"
+    sh "git push origin master"
+  end
+
+  desc "add all changed files, commit, and push. cap = commit and push"
+  task :cap, [:message] do |t, args|
+    sh "git add --all", verbose: false
+    sh "git commit -m \"#{args[:message]}\"", verbose: false
+    sh "git push origin master", verbose: false
+  end
+
+  desc "submit this project via the cse3901 specifications."
+  task :submit3901 do
+    Rake::Task["git:submit"].invoke("submission","completed project")
+  end
+end
+ 
